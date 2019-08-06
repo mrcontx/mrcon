@@ -16,7 +16,6 @@ const bot = new Discord.Client();
 const ayarlar = require('./ayarlar.json');
 const chalk = require('chalk');
 const fs = require('fs');
-const db = require("quick.db")
 const Jimp = require("jimp")
 const request = require('node-superfetch');
 const ms = require('parse-ms')
@@ -415,31 +414,6 @@ message.guild.createChannel(`🎮》LOL`, 'voice')
 //-------------------------Sunucu Kur Komudu SON-----------------------//
 
 
-//------------------------------AFK KOMUDU -----------------------//
-
-
-
-client.on("message", message => {
-  if(!message.guild) return
-    let afk_kullanici = message.mentions.users.first() || message.author;
-    if(message.content.startsWith(prefix + "afk")) return; 
-  if (message.author.bot === true) return;
-    if(message.content.includes(`<@${afk_kullanici.id}>`))
-        if(db.has(`afks_${afk_kullanici.id}`)) {
-                message.channel.send(`**${client.users.get(afk_kullanici.id).tag}** adlı kullanıcı şuanda AFK! \n**Sebep:** \n${db.fetch(`afks_${afk_kullanici.id}`)}`)
-        }
-  
-        if(db.has(`afks_${message.author.id}`)) {
-          var ism = message.member.diplayName
-            ism = ism
-          message.member.setNickname(message.author.username)
-                message.reply("Başarıyla AFK modundan Çıktın Hoşgeldin!")
-            db.delete(`afks_${message.author.id}`)
-        }
-  
-});
-
-//------------------------------AFK KOMUDU SON-----------------------//
 
 //----------------------------------lİNK ENGELLEME-----------------------------//
 
@@ -483,26 +457,6 @@ client.on("message", msg => {
 
 //----------------------------------KÜFÜR ENGELLEME SON-----------------------------//
 
-//----------------------------------CAPSLOCK ENGELLEME-----------------------------//  
-client.on("message", async msg => {
-    if (msg.channel.type === "dm") return;
-      if(msg.author.bot) return;  
-        if (msg.content.length > 4) {
-         if (db.fetch(`capslock_${msg.guild.id}`)) {
-           let caps = msg.content.toUpperCase()
-           if (msg.content == caps) {
-             if (!msg.member.hasPermission("ADMINISTRATOR")) {
-               if (!msg.mentions.users.first()) {
-                 msg.delete()
-                 return msg.channel.send(`✋ ${msg.author}, Bu sunucuda, büyük harf kullanımı engellenmekte!`).then(m => m.delete(5000))
-     }
-       }
-     }
-   }
-  }
-});
-
-//----------------------------------CAPSLOCK ENGELLEME SON-----------------------------//  
 
 
 //----------------------------------EVERYONE ENGELLEME-----------------------------// 
@@ -653,17 +607,6 @@ client.on("guildMemberAdd", async member => {
 
 //----------------------------------SAYAÇ SON-----------------------------// 
 
-//----------------------------------TAG-----------------------------// 
-
-client.on('guildMemberAdd', async member => {
-  
-  let tag = await db.fetch(`tag_${member.guild.id}`);
-  let tagyazi;
-  if (tag == null) tagyazi = member.setNickname(`${member.user.username}`)
-  else tagyazi = member.setNickname(`${tag} | ${member.user.username}`)
-});
-
-//----------------------------------TAG SON-----------------------------// 
 
 
 //----------------------------------PREMİUM EMOJİ İLE RENKLİ ROL-----------------------------// 
@@ -744,37 +687,6 @@ setInterval(() => {
 //----------------------------------ZAMANLI YAZI SON-----------------------------// 
 
 
-//----------------------------------KAYITOL-----------------------------// 
-
-client.on('guildMemberAdd', (member) => {
-    const db = require('quick.db'); 
-
-         const channelss = db.fetch(`kkanal_${member.guild.id}`).replace("<#", "").replace(">", "")
-
-       const kayıts = db.fetch(`ksistem_${member.guild.id}`)
-             if (kayıts == undefined) {
-             }
-            if (kayıts == 'acik') {
-             
-                          member.guild.channels.forEach(async (channel, id) => {
-                await channel.overwritePermissions(member, {
-                    VIEW_CHANNEL: false
-                });
-            });
-                          
-                 member.guild.channels.get(channelss).overwritePermissions(member, {
-                    SEND_MESSAGES: true,
-                    VIEW_CHANNEL: true
-                });
-            
-            }
-
-        
-  });
-   
-
-
-//----------------------------------KAYITOL SON-----------------------------// 
 
 
 function cpanel1() {
